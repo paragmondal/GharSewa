@@ -90,12 +90,16 @@ const UserDashboard = () => {
                   </div>
                 </div>
                 <div style={{ display: 'flex', gap: '16px' }}>
-                  <button style={{ background: '#252630', color: '#e2e8f0', border: '1px solid #333440', padding: '12px 24px', borderRadius: '12px', fontSize: '14px', fontWeight: '600', cursor: 'pointer', transition: 'background 0.2s' }} onMouseOver={e=>e.currentTarget.style.background='#333440'} onMouseOut={e=>e.currentTarget.style.background='#252630'}>
-                    Reschedule
-                  </button>
-                  <button style={{ background: 'linear-gradient(135deg, #a78bfa, #818cf8)', color: '#0f1015', border: 'none', padding: '12px 32px', borderRadius: '12px', fontSize: '14px', fontWeight: '700', cursor: 'pointer', boxShadow: '0 8px 20px rgba(129,140,248,0.3)', transition: 'transform 0.2s' }} onMouseOver={e=>e.currentTarget.style.transform='translateY(-2px)'} onMouseOut={e=>e.currentTarget.style.transform='translateY(0)'}>
-                    Track Pro
-                  </button>
+                  <Link to="/bookings" style={{ textDecoration: 'none' }}>
+                    <button style={{ background: '#252630', color: '#e2e8f0', border: '1px solid #333440', padding: '12px 24px', borderRadius: '12px', fontSize: '14px', fontWeight: '600', cursor: 'pointer', transition: 'background 0.2s', width: '100%' }} onMouseOver={e=>e.currentTarget.style.background='#333440'} onMouseOut={e=>e.currentTarget.style.background='#252630'}>
+                      Reschedule
+                    </button>
+                  </Link>
+                  <Link to="/bookings" style={{ textDecoration: 'none' }}>
+                    <button style={{ background: 'linear-gradient(135deg, #a78bfa, #818cf8)', color: '#0f1015', border: 'none', padding: '12px 32px', borderRadius: '12px', fontSize: '14px', fontWeight: '700', cursor: 'pointer', boxShadow: '0 8px 20px rgba(129,140,248,0.3)', transition: 'transform 0.2s', width: '100%' }} onMouseOver={e=>e.currentTarget.style.transform='translateY(-2px)'} onMouseOut={e=>e.currentTarget.style.transform='translateY(0)'}>
+                      Track Pro
+                    </button>
+                  </Link>
                 </div>
               </div>
             </section>
@@ -140,7 +144,7 @@ const UserDashboard = () => {
                     <p style={{ fontSize: '10px', fontWeight: '700', color: '#818cf8', letterSpacing: '0.1em', margin: '0 0 8px 0' }}>MONTHLY FEATURED</p>
                     <h3 style={{ fontSize: '18px', fontWeight: '600', color: '#fff', margin: '0 0 8px 0', lineHeight: 1.3 }}>Smart Kitchen<br/>Maintenance Suite</h3>
                     <p style={{ fontSize: '13px', color: '#64748b', margin: '0 0 16px 0', lineHeight: 1.5 }}>Comprehensive care for high-end appliances and custom cabinetry.</p>
-                    <a href="#" style={{ color: '#fff', fontSize: '13px', fontWeight: '600', textDecoration: 'underline', textUnderlineOffset: '4px' }}>Explore Package</a>
+                    <Link to="/services" style={{ color: '#fff', fontSize: '13px', fontWeight: '600', textDecoration: 'underline', textUnderlineOffset: '4px' }}>Explore Package</Link>
                   </div>
                </div>
                
@@ -226,9 +230,11 @@ const UserDashboard = () => {
       </div>
 
       {/* Floating Chat Button (Bottom Right) */}
-      <div style={{ position: 'fixed', bottom: '40px', right: '40px', width: '60px', height: '60px', background: '#4f46e5', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 10px 25px rgba(79,70,229,0.4)', cursor: 'pointer', zIndex: 100 }} onMouseOver={e=>e.currentTarget.style.transform='scale(1.05)'} onMouseOut={e=>e.currentTarget.style.transform='scale(1)'}>
-        <MessageSquare size={24} color="white" />
-      </div>
+      <Link to="/book/wizard" style={{ textDecoration: 'none' }}>
+        <div style={{ position: 'fixed', bottom: '40px', right: '40px', width: '60px', height: '60px', background: '#4f46e5', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 10px 25px rgba(79,70,229,0.4)', cursor: 'pointer', zIndex: 100 }} onMouseOver={e=>e.currentTarget.style.transform='scale(1.05)'} onMouseOut={e=>e.currentTarget.style.transform='scale(1)'}>
+          <MessageSquare size={24} color="white" />
+        </div>
+      </Link>
 
     </div>
   );
