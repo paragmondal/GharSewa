@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Calendar, CheckCircle, Clock, Star, ArrowRight, Zap, TrendingUp, MapPin, Activity } from 'lucide-react';
+import { Calendar, CheckCircle, Clock, Star, ArrowRight, Zap, TrendingUp, MapPin, Activity, ShieldCheck } from 'lucide-react';
 import Sidebar from '../../components/layout/Sidebar';
 import Chatbot from '../../components/chatbot/Chatbot';
 import { bookingAPI, serviceAPI } from '../../api';
