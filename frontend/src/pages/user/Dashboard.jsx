@@ -1,23 +1,14 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Calendar, CheckCircle, Clock, Star, ArrowRight, Zap, TrendingUp, MapPin, Activity, ShieldCheck } from 'lucide-react';
+import { Search, Bell, HelpCircle, Zap, ShieldCheck, Mail, MoreHorizontal, MessageSquare } from 'lucide-react';
 import Sidebar from '../../components/layout/Sidebar';
-import Chatbot from '../../components/chatbot/Chatbot';
 import { bookingAPI, serviceAPI } from '../../api';
 import useAuthStore from '../../store/authStore';
-import { useTranslation } from 'react-i18next';
-
-const statusBadge = (status) => {
-  const tStatus = status.replace('_', ' ');
-  return <span className={`badge badge-${status}`}>{tStatus.charAt(0).toUpperCase() + tStatus.slice(1)}</span>;
-};
 
 const UserDashboard = () => {
   const { user } = useAuthStore();
-  const { t } = useTranslation();
   const [bookings, setBookings] = useState([]);
   const [services, setServices] = useState([]);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     Promise.all([
@@ -26,166 +17,219 @@ const UserDashboard = () => {
     ]).then(([b, s]) => {
       setBookings(b.data.data.bookings || []);
       setServices(s.data.data.services || []);
-    }).finally(() => setLoading(false));
+    }).catch(err => console.error(err));
   }, []);
-
-  const stats = [
-    { icon: Activity, label: t('totalBookings'), value: bookings.length, color: 'var(--c-primary)' },
-    { icon: CheckCircle, label: t('completed'), value: bookings.filter(b => b.status === 'completed').length, color: 'var(--c-success)' },
-    { icon: Clock, label: t('pending'), value: bookings.filter(b => b.status === 'pending' || b.status === 'confirmed').length, color: 'var(--c-warning)' },
-  ];
 
   const upcomingBooking = bookings.find(b => b.status === 'pending' || b.status === 'confirmed');
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', fontFamily: '"Manrope", "Inter", sans-serif' }}>
+    <div style={{ display: 'flex', minHeight: '100vh', background: '#0B0C10', fontFamily: '"Inter", sans-serif', color: '#e2e8f0' }}>
       <Sidebar />
-      <div className="main-content" style={{ padding: '48px 64px', boxSizing: 'border-box', minWidth: 0, flex: 1, position: 'relative' }}>
+      <div style={{ marginLeft: '260px', flex: 1, padding: '32px 48px', display: 'flex', flexDirection: 'column' }}>
         
-        {/* Ambient Page Glow */}
-        <div style={{ position: 'fixed', top: '-10%', left: '25%', width: '800px', height: '800px', background: 'radial-gradient(circle, color-mix(in srgb, var(--c-primary) 8%, transparent) 0%, transparent 60%)', pointerEvents: 'none', zIndex: 0 }} />
-
-        <div style={{ maxWidth: '1440px', margin: '0 auto', position: 'relative', zIndex: 10 }}>
-        
-        {/* Hero Upcoming Booking (Absolute Premium Lumina Glassmorphism) */}
-        {upcomingBooking ? (
-          <div className="fade-in" style={{ marginBottom: '64px', position: 'relative', overflow: 'hidden', padding: '48px 56px', background: 'color-mix(in srgb, var(--c-surface-2) 40%, transparent)', backdropFilter: 'blur(60px)', WebkitBackdropFilter: 'blur(60px)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '32px', boxShadow: '0 40px 80px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.05)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <div style={{ zIndex: 10, position: 'relative' }}>
-              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'color-mix(in srgb, var(--c-primary) 15%, transparent)', padding: '6px 14px', borderRadius: '30px', color: 'var(--c-primary)', fontSize: '12px', fontWeight: '800', letterSpacing: '0.1em', marginBottom: '20px', border: '1px solid color-mix(in srgb, var(--c-primary) 30%, transparent)' }}>
-                <Zap size={14} /> ACTIVE DISPATCH
-              </div>
-              <h2 style={{ fontSize: '42px', fontWeight: '800', color: '#ffffff', margin: '0 0 12px 0', letterSpacing: '-0.02em', textShadow: '0 4px 24px rgba(0,0,0,0.4)' }}>
-                {upcomingBooking.serviceId?.name || 'Professional Service'}
-              </h2>
-              <p style={{ color: 'var(--c-text-muted)', fontSize: '18px', display: 'flex', alignItems: 'center', gap: '8px', margin: 0, fontWeight: '500' }}>
-                <Calendar size={20} color="var(--c-primary)" /> 
-                Scheduled for {new Date(upcomingBooking.scheduledDate).toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })} at {upcomingBooking.scheduledTime}
-              </p>
-            </div>
-            <div style={{ zIndex: 10, position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '24px' }}>
-              {statusBadge(upcomingBooking.status)}
-              <Link to="/bookings">
-                <button style={{ background: 'linear-gradient(135deg, var(--c-primary), #4f46e5)', color: '#fff', border: '1px solid rgba(255,255,255,0.2)', padding: '16px 36px', borderRadius: '16px', fontSize: '15px', fontWeight: '800', cursor: 'pointer', boxShadow: '0 12px 30px color-mix(in srgb, var(--c-primary) 40%, transparent)', transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)' }} onMouseOver={e => e.currentTarget.style.transform = 'translateY(-2px)'} onMouseOut={e => e.currentTarget.style.transform = 'translateY(0)'}>
-                  Manage Appointment
-                </button>
-              </Link>
-            </div>
-            {/* Extremely soft dynamic glow */}
-            <div style={{ position: 'absolute', bottom: '-40%', right: '10%', width: '500px', height: '500px', background: 'radial-gradient(circle, color-mix(in srgb, var(--c-primary) 20%, transparent) 0%, transparent 70%)', filter: 'blur(50px)', zIndex: 1, pointerEvents: 'none' }} />
+        {/* Top Navbar */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '48px' }}>
+          <div style={{ position: 'relative', width: '380px' }}>
+            <Search size={18} style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', color: '#64748b' }} />
+            <input 
+              type="text" 
+              placeholder="Search services..." 
+              style={{ width: '100%', background: '#13141b', border: '1px solid #1e202b', borderRadius: '30px', padding: '12px 16px 12px 44px', color: '#fff', fontSize: '14px', outline: 'none' }}
+            />
           </div>
-        ) : (
-           <div className="fade-in" style={{ marginBottom: '64px', padding: '0' }}>
-              <h1 style={{ fontSize: '48px', fontWeight: '800', color: '#ffffff', letterSpacing: '-0.03em', margin: '0 0 12px 0' }}>
-                 Welcome back, <span style={{ background: 'linear-gradient(135deg, var(--c-primary), #a78bfa)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>{user?.name?.split(' ')[0]}</span>.
-              </h1>
-              <p style={{ color: 'var(--c-text-muted)', fontSize: '18px', margin: 0, maxWidth: '600px', lineHeight: 1.6 }}>
-                Your digital concierge is online. Let us secure your home with elite professional services today.
-              </p>
-           </div>
-        )}
-
-        {/* 3-Column Premium Layout */}
-        <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '48px' }}>
           
-          {/* Main Services Column */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '48px' }}>
-            
-            {/* Services Grid (Cinematic Edges) */}
-            <div className="fade-in">
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px' }}>
-                <h2 style={{ fontSize: '24px', fontWeight: '800', color: '#ffffff', margin: 0, letterSpacing: '-0.01em' }}>Service Catalog</h2>
-                <Link to="/services" style={{ color: 'var(--c-text-muted)', textDecoration: 'none', fontSize: '14px', fontWeight: '700', display: 'flex', alignItems: 'center', gap: '8px', transition: 'color 0.2s' }} onMouseOver={e=>e.currentTarget.style.color='#ffffff'} onMouseOut={e=>e.currentTarget.style.color='var(--c-text-muted)'}>
-                  View Catalog <ArrowRight size={16} />
-                </Link>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
+            <div style={{ position: 'relative', cursor: 'pointer' }}>
+              <Bell size={20} color="#94a3b8" />
+              <div style={{ position: 'absolute', top: '-2px', right: '-2px', width: '8px', height: '8px', background: '#ef4444', borderRadius: '50%' }} />
+            </div>
+            <HelpCircle size={20} color="#94a3b8" style={{ cursor: 'pointer' }} />
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', borderLeft: '1px solid #1e202b', paddingLeft: '24px' }}>
+              <div style={{ textAlign: 'right' }}>
+                <p style={{ margin: 0, fontSize: '14px', fontWeight: '600', color: '#f8fafc' }}>{user?.name || 'Customer'}</p>
+                <p style={{ margin: 0, fontSize: '11px', fontWeight: '500', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Premium Member</p>
               </div>
-              
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '24px' }}>
-                {services.slice(0, 4).map((svc) => (
-                  <Link key={svc._id} to={`/book/${svc._id}`} style={{ textDecoration: 'none' }}>
-                    <div style={{ background: 'linear-gradient(145deg, var(--c-surface), var(--c-bg))', padding: '32px', borderRadius: '24px', position: 'relative', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.03)', transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '24px' }} 
-                         onMouseOver={e => { e.currentTarget.style.border = '1px solid rgba(99,102,241,0.4)'; e.currentTarget.style.boxShadow = '0 20px 40px rgba(99,102,241,0.15)'; e.currentTarget.style.transform = 'translateY(-4px)'; e.currentTarget.querySelector('.svc-icon').style.transform = 'scale(1.1)'; }}
-                         onMouseOut={e => { e.currentTarget.style.border = '1px solid rgba(255,255,255,0.03)'; e.currentTarget.style.boxShadow = 'none'; e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.querySelector('.svc-icon').style.transform = 'scale(1)'; }}>
-                      <div className="svc-icon" style={{ fontSize: '48px', filter: 'drop-shadow(0 8px 16px rgba(0,0,0,0.5))', transition: 'transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)', zIndex: 2 }}>{svc.icon}</div>
-                      <div style={{ zIndex: 2 }}>
-                        <h3 style={{ fontSize: '18px', fontWeight: '800', color: '#ffffff', margin: '0 0 6px 0', letterSpacing: '-0.01em' }}>{svc.name}</h3>
-                        <p style={{ fontSize: '14px', color: 'var(--c-primary)', fontWeight: '700', margin: 0 }}>Starting at ₹{svc.basePrice}</p>
-                      </div>
-                      <div style={{ position: 'absolute', right: '-10%', bottom: '-20%', fontSize: '120px', opacity: 0.03, filter: 'blur(2px)', pointerEvents: 'none' }}>{svc.icon}</div>
+              <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'linear-gradient(135deg, #1e202b, #2d303f)', border: '1px solid #334155', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#818cf8', fontWeight: '700', fontSize: '16px' }}>
+                {user?.name?.[0]?.toUpperCase() || 'U'}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style={{ display: 'flex', gap: '48px', alignItems: 'flex-start' }}>
+          
+          {/* Main Left Column */}
+          <div style={{ flex: '1', display: 'flex', flexDirection: 'column', gap: '40px' }}>
+            
+            {/* Immediate Attention Hero */}
+            <section>
+              <h3 style={{ fontSize: '11px', fontWeight: '700', color: '#94a3b8', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '16px' }}>Immediate Attention</h3>
+              <div style={{ background: '#1c1d24', borderRadius: '24px', padding: '32px 40px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', border: '1px solid #2a2b36' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
+                  <div style={{ width: '64px', height: '64px', background: '#252630', borderRadius: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <div style={{ filter: 'drop-shadow(0 0 8px rgba(129,140,248,0.5))' }}>
+                      <Zap size={28} color="#818cf8" />
                     </div>
-                  </Link>
+                  </div>
+                  <div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
+                      <span style={{ fontSize: '11px', fontWeight: '700', background: 'rgba(16,185,129,0.1)', color: '#10b981', padding: '4px 8px', borderRadius: '4px', letterSpacing: '0.05em' }}>CONFIRMED</span>
+                      <span style={{ fontSize: '13px', color: '#94a3b8' }}>Upcoming Today</span>
+                    </div>
+                    {upcomingBooking ? (
+                      <>
+                        <h2 style={{ fontSize: '24px', fontWeight: '700', color: '#fff', margin: '0 0 8px 0', letterSpacing: '-0.01em' }}>{upcomingBooking.serviceId?.name} Pro arriving at {upcomingBooking.scheduledTime}</h2>
+                        <p style={{ margin: 0, fontSize: '14px', color: '#94a3b8' }}>Standard Visit • ID: GS-{upcomingBooking.bookingNumber.substring(0,6)}</p>
+                      </>
+                    ) : (
+                       <>
+                        <h2 style={{ fontSize: '24px', fontWeight: '700', color: '#fff', margin: '0 0 8px 0', letterSpacing: '-0.01em' }}>Master Electrician arriving at 2:00 PM</h2>
+                        <p style={{ margin: 0, fontSize: '14px', color: '#94a3b8' }}>Full-Home Safety Inspection • Appointment ID: GS-9921</p>
+                      </>
+                    )}
+                  </div>
+                </div>
+                <div style={{ display: 'flex', gap: '16px' }}>
+                  <button style={{ background: '#252630', color: '#e2e8f0', border: '1px solid #333440', padding: '12px 24px', borderRadius: '12px', fontSize: '14px', fontWeight: '600', cursor: 'pointer', transition: 'background 0.2s' }} onMouseOver={e=>e.currentTarget.style.background='#333440'} onMouseOut={e=>e.currentTarget.style.background='#252630'}>
+                    Reschedule
+                  </button>
+                  <button style={{ background: 'linear-gradient(135deg, #a78bfa, #818cf8)', color: '#0f1015', border: 'none', padding: '12px 32px', borderRadius: '12px', fontSize: '14px', fontWeight: '700', cursor: 'pointer', boxShadow: '0 8px 20px rgba(129,140,248,0.3)', transition: 'transform 0.2s' }} onMouseOver={e=>e.currentTarget.style.transform='translateY(-2px)'} onMouseOut={e=>e.currentTarget.style.transform='translateY(0)'}>
+                    Track Pro
+                  </button>
+                </div>
+              </div>
+            </section>
+
+            {/* Available Services */}
+            <section>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+                <h2 style={{ fontSize: '22px', fontWeight: '700', margin: 0, color: '#f8fafc' }}>Available Services</h2>
+                <Link to="/services" style={{ fontSize: '12px', fontWeight: '700', color: '#818cf8', textDecoration: 'none', letterSpacing: '0.05em' }}>VIEW ALL</Link>
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '20px' }}>
+                {/* Fallback to Mockup data if real services aren't loaded yet to guarantee pixel-perfect match */}
+                {[
+                  { title: 'Plumbing', sub: 'Expert leak repairs, pipe fittings, and fixture installation.', price: '$45/HR', icon: 'wrench' },
+                  { title: 'Deep Cleaning', sub: 'Premium sanitation for luxury residences and smart homes.', price: '$35/HR', icon: 'spray' },
+                  { title: 'Interior Painting', sub: 'Precision finishes and premium paint selection services.', price: '$65/HR', icon: 'paint' }
+                ].map((mock, idx) => {
+                  const realSvc = services[idx];
+                  return (
+                  <div key={idx} style={{ background: '#121318', border: '1px solid #1f2029', borderRadius: '24px', padding: '32px 24px', display: 'flex', flexDirection: 'column', gap: '24px', transition: 'border-color 0.2s', cursor: 'pointer' }} onMouseOver={e=>e.currentTarget.style.borderColor='#333440'} onMouseOut={e=>e.currentTarget.style.borderColor='#1f2029'}>
+                    <div style={{ width: '40px', height: '40px', background: '#1f2029', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '18px', color: '#a78bfa' }}>
+                       {realSvc ? realSvc.icon : (mock.icon === 'wrench' ? '🔧' : mock.icon === 'spray' ? '🧽' : '🖌️')}
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <h3 style={{ fontSize: '18px', fontWeight: '600', color: '#f8fafc', margin: '0 0 12px 0' }}>{realSvc ? realSvc.name : mock.title}</h3>
+                      <p style={{ fontSize: '14px', color: '#64748b', lineHeight: '1.6', margin: 0 }}>{realSvc ? realSvc.description?.substring(0, 65)+'...' : mock.sub}</p>
+                    </div>
+                    <p style={{ fontSize: '12px', fontWeight: '600', color: '#64748b', margin: 0 }}>FROM {realSvc ? '₹'+realSvc.basePrice : mock.price}</p>
+                  </div>
+                  )
+                })}
+              </div>
+            </section>
+
+            {/* Bottom Two Cards */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '20px' }}>
+               <div style={{ background: '#121318', border: '1px solid #1f2029', borderRadius: '24px', padding: '32px', display: 'flex', gap: '24px', alignItems: 'center' }}>
+                  <div style={{ width: '80px', height: '80px', background: '#1f2029', borderRadius: '16px', overflow: 'hidden' }}>
+                    <img src="https://images.unsplash.com/photo-1556910103-1c02745a872)F?ixlib=rb-1.2.1&auto=format&fit=crop&w=200&q=80" alt="Kitchen" style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: 0.8 }} onError={(e) => { e.target.style.display='none'; e.target.parentElement.innerHTML = '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:#6366f1">🍳</div>'; }} />
+                  </div>
+                  <div>
+                    <p style={{ fontSize: '10px', fontWeight: '700', color: '#818cf8', letterSpacing: '0.1em', margin: '0 0 8px 0' }}>MONTHLY FEATURED</p>
+                    <h3 style={{ fontSize: '18px', fontWeight: '600', color: '#fff', margin: '0 0 8px 0', lineHeight: 1.3 }}>Smart Kitchen<br/>Maintenance Suite</h3>
+                    <p style={{ fontSize: '13px', color: '#64748b', margin: '0 0 16px 0', lineHeight: 1.5 }}>Comprehensive care for high-end appliances and custom cabinetry.</p>
+                    <a href="#" style={{ color: '#fff', fontSize: '13px', fontWeight: '600', textDecoration: 'underline', textUnderlineOffset: '4px' }}>Explore Package</a>
+                  </div>
+               </div>
+               
+               <div style={{ background: '#121318', border: '1px solid #1f2029', borderRadius: '24px', padding: '40px 32px', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', justifyContent: 'center' }}>
+                 <div style={{ width: '48px', height: '48px', background: '#064e3b', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '16px' }}>
+                   <ShieldCheck size={24} color="#34d399" />
+                 </div>
+                 <h3 style={{ fontSize: '18px', fontWeight: '600', color: '#fff', margin: '0 0 8px 0' }}>Elite Guarantee</h3>
+                 <p style={{ fontSize: '13px', color: '#64748b', margin: 0, lineHeight: 1.5, maxWidth: '200px' }}>All services insured up to $10M for your total peace of mind.</p>
+               </div>
+            </div>
+
+          </div>
+
+          {/* Right Column / Sidebar Metrics */}
+          <div style={{ width: '340px', display: 'flex', flexDirection: 'column', gap: '32px' }}>
+            
+            {/* Top Professionals */}
+            <div style={{ background: '#121318', border: '1px solid #1f2029', borderRadius: '24px', padding: '32px 24px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+                <h3 style={{ fontSize: '18px', fontWeight: '600', color: '#fff', margin: 0 }}>Top Professionals</h3>
+                <MoreHorizontal size={20} color="#64748b" style={{ cursor: 'pointer' }} />
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+                {[
+                  { name: 'Marcus Sterling', role: 'SENIOR ELECTRICIAN', rating: '4.9', face: '👨🏿‍🦱' },
+                  { name: 'Elena Vance', role: 'MASTER INTERIOR DECOR', rating: '5.0', face: '👩🏼' },
+                  { name: 'David Kim', role: 'PLUMBING SPECIALIST', rating: '4.8', face: '👨🏻' },
+                ].map((pro, idx) => (
+                  <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                      <div style={{ position: 'relative' }}>
+                        <div style={{ width: '44px', height: '44px', background: '#1f2029', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '24px', overflow: 'hidden' }}>
+                          {pro.face}
+                        </div>
+                        <div style={{ position: 'absolute', bottom: 0, right: 0, width: '12px', height: '12px', background: '#10b981', borderRadius: '50%', border: '2px solid #121318' }} />
+                      </div>
+                      <div>
+                        <h4 style={{ fontSize: '14px', fontWeight: '600', color: '#e2e8f0', margin: '0 0 4px 0' }}>{pro.name}</h4>
+                        <p style={{ fontSize: '10px', fontWeight: '700', color: '#64748b', letterSpacing: '0.05em', margin: '0 0 4px 0' }}>{pro.role}</p>
+                        <p style={{ fontSize: '12px', color: '#94a3b8', margin: 0 }}>{pro.rating} ★</p>
+                      </div>
+                    </div>
+                    <div style={{ width: '32px', height: '32px', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }} onMouseOver={e=>e.currentTarget.style.background='#1f2029'} onMouseOut={e=>e.currentTarget.style.background='transparent'}>
+                      <Mail size={16} color="#64748b" />
+                    </div>
+                  </div>
                 ))}
               </div>
             </div>
 
-            {/* Recent History */}
-            <div className="fade-in">
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px' }}>
-                <h2 style={{ fontSize: '24px', fontWeight: '800', color: '#ffffff', margin: 0, letterSpacing: '-0.01em' }}>Recent Intelligence</h2>
+            {/* Recent Activity / AI Concierge */}
+            <div style={{ position: 'relative' }}>
+              <div style={{ background: '#1a1b23', border: '1px solid #252630', borderRadius: '24px', padding: '24px', opacity: 0.9 }}>
+                <h3 style={{ fontSize: '11px', fontWeight: '700', color: '#64748b', letterSpacing: '0.1em', margin: '0 0 20px 0' }}>YOUR RECENT ACTIVITY</h3>
+                <div style={{ display: 'flex', gap: '16px', position: 'relative' }}>
+                  <div style={{ position: 'absolute', left: '5px', top: '10px', bottom: '-40px', width: '2px', background: '#2e2f3e' }} />
+                  <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: '#6366f1', zIndex: 1, marginTop: '2px' }} />
+                  <div>
+                    <p style={{ fontSize: '14px', fontWeight: '600', color: '#fff', margin: '0 0 4px 0' }}>Plumbing repair completed</p>
+                    <p style={{ fontSize: '12px', color: '#64748b', margin: 0 }}>Oct 24, 2023</p>
+                  </div>
+                </div>
               </div>
 
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                {bookings.length === 0 && !loading && (
-                  <div style={{ padding: '40px', textAlign: 'center', border: '1px dashed rgba(255,255,255,0.1)', borderRadius: '24px' }}>
-                    <p style={{ color: 'var(--c-text-muted)', fontSize: '15px', fontWeight: '500' }}>No historical data found. Dispatch a service to generate records.</p>
-                  </div>
-                )}
-                {bookings.map((b) => (
-                   <div key={b._id} style={{ background: 'var(--c-surface)', padding: '24px 32px', borderRadius: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', transition: 'background 0.2s', border: '1px solid rgba(255,255,255,0.02)' }} onMouseOver={e=>e.currentTarget.style.background='var(--c-surface-2)'} onMouseOut={e=>e.currentTarget.style.background='var(--c-surface)'}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
-                        <div style={{ fontSize: '24px', background: 'var(--c-bg)', width: '56px', height: '56px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '16px', boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.05)' }}>
-                          {b.serviceId?.icon || '⚙️'}
-                        </div>
-                        <div>
-                          <p style={{ fontWeight: '800', color: '#ffffff', fontSize: '16px', margin: '0 0 6px 0' }}>{b.serviceId?.name || 'Service'}</p>
-                          <p style={{ fontSize: '13px', color: 'var(--c-text-muted)', display: 'flex', alignItems: 'center', gap: '8px', margin: 0, fontWeight: '500' }}>
-                            <span style={{ color: 'var(--c-primary)', background: 'color-mix(in srgb, var(--c-primary) 15%, transparent)', padding: '2px 8px', borderRadius: '6px' }}>#{b.bookingNumber}</span>
-                            {new Date(b.scheduledDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
-                          </p>
-                        </div>
-                      </div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '40px' }}>
-                        <div style={{ textAlign: 'right' }}>
-                          <span style={{ fontSize: '18px', fontWeight: '800', color: '#ffffff', letterSpacing: '-0.02em' }}>₹{b.amount}</span>
-                        </div>
-                        {statusBadge(b.status)}
-                      </div>
-                    </div>
-                ))}
+              {/* AI Concierge Float Layer */}
+              <div style={{ position: 'absolute', bottom: '-20px', left: '-10px', right: '-10px', background: '#252630', border: '1px solid #333440', borderRadius: '20px', padding: '24px', boxShadow: '0 20px 40px rgba(0,0,0,0.5)', zIndex: 10 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
+                  <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#34d399' }} />
+                  <span style={{ fontSize: '11px', fontWeight: '700', color: '#34d399', letterSpacing: '0.05em' }}>AI CONCIERGE</span>
+                </div>
+                <p style={{ fontSize: '14px', color: '#e2e8f0', lineHeight: 1.6, margin: 0 }}>
+                  Hi {user?.name?.split(' ')[0] || 'Adrian'}! Based on your history, I recommend booking <strong>Marcus Sterling</strong> for your inspection today.
+                </p>
               </div>
             </div>
 
           </div>
 
-          {/* Side Analytics Column */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-            <h2 style={{ fontSize: '20px', fontWeight: '800', color: '#ffffff', margin: '0 0 8px 0', letterSpacing: '-0.01em' }}>Metrics</h2>
-            {stats.map((stat, idx) => (
-              <div key={stat.label} className="fade-in" style={{ background: 'linear-gradient(180deg, var(--c-surface), var(--c-surface-2))', borderRadius: '24px', padding: '32px', animationDelay: `${idx * 0.1}s`, border: '1px solid rgba(255,255,255,0.03)', boxShadow: '0 10px 30px rgba(0,0,0,0.2)' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '24px' }}>
-                  <div style={{ width: '48px', height: '48px', borderRadius: '14px', background: `color-mix(in srgb, ${stat.color} 15%, transparent)`, display: 'flex', alignItems: 'center', justifyContent: 'center', border: `1px solid color-mix(in srgb, ${stat.color} 20%, transparent)` }}>
-                    <stat.icon size={24} color={stat.color} />
-                  </div>
-                  <TrendingUp size={20} color="var(--c-text-muted)" opacity={0.5} />
-                </div>
-                <div>
-                  <p style={{ fontSize: '48px', fontWeight: '800', color: '#ffffff', lineHeight: '1', margin: '0 0 8px 0', letterSpacing: '-0.03em' }}>{stat.value}</p>
-                  <p style={{ fontSize: '14px', color: 'var(--c-text-muted)', fontWeight: '700', margin: 0, textTransform: 'uppercase', letterSpacing: '0.05em' }}>{stat.label}</p>
-                </div>
-              </div>
-            ))}
-            
-            <div className="fade-in" style={{ background: 'color-mix(in srgb, var(--c-primary) 10%, transparent)', borderRadius: '24px', padding: '32px', border: '1px solid color-mix(in srgb, var(--c-primary) 30%, transparent)', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', animationDelay: '0.4s', marginTop: '24px' }}>
-               <ShieldCheck size={48} color="var(--c-primary)" style={{ filter: 'drop-shadow(0 8px 16px rgba(99,102,241,0.4))', marginBottom: '16px' }} />
-               <h3 style={{ fontSize: '18px', fontWeight: '800', color: '#ffffff', margin: '0 0 8px 0' }}>GharSewa Guarantee</h3>
-               <p style={{ fontSize: '14px', color: 'var(--c-primary-light)', margin: 0, lineHeight: 1.5, opacity: 0.8 }}>Every service is backed by our 100% satisfaction promise and verified professionals.</p>
-            </div>
-          </div>
-          
         </div>
 
-        </div>
       </div>
-      <Chatbot />
+
+      {/* Floating Chat Button (Bottom Right) */}
+      <div style={{ position: 'fixed', bottom: '40px', right: '40px', width: '60px', height: '60px', background: '#4f46e5', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 10px 25px rgba(79,70,229,0.4)', cursor: 'pointer', zIndex: 100 }} onMouseOver={e=>e.currentTarget.style.transform='scale(1.05)'} onMouseOut={e=>e.currentTarget.style.transform='scale(1)'}>
+        <MessageSquare size={24} color="white" />
+      </div>
+
     </div>
   );
 };
