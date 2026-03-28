@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Zap, Loader2 } from 'lucide-react';
+import { Zap, Loader2, ArrowLeft } from 'lucide-react';
 import useAuthStore from '../../store/authStore';
 import { authAPI } from '../../api';
 
@@ -47,7 +47,10 @@ const Register = () => {
   );
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px', background: 'linear-gradient(135deg, #0f0f14 0%, #1a0a2e 100%)' }}>
+    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px', background: 'linear-gradient(135deg, #0f0f14 0%, #1a0a2e 100%)', position: 'relative' }}>
+      <Link to="/" style={{ position: 'absolute', top: '32px', left: '32px', display: 'flex', alignItems: 'center', gap: '8px', color: '#94a3b8', textDecoration: 'none', fontSize: '14px', fontWeight: '600', transition: 'color 0.2s' }} onMouseOver={e=>e.currentTarget.style.color='white'} onMouseOut={e=>e.currentTarget.style.color='#94a3b8'}>
+        <ArrowLeft size={16} /> Back to Home
+      </Link>
       <div style={{ width: '100%', maxWidth: '440px' }}>
         <div style={{ textAlign: 'center', marginBottom: '32px' }}>
           <div style={{ width: '56px', height: '56px', background: 'linear-gradient(135deg, #6366f1, #a78bfa)', borderRadius: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 12px' }}>
