@@ -19,7 +19,7 @@
 
 @layer base {
   :root {
-    /* Dark Theme (Default) */
+    /* Dark Theme (Lumina Noir default) */
     --c-primary: #6366f1;
     --c-primary-hover: #4f46e5;
     --c-primary-light: #e0e7ff;
@@ -27,13 +27,13 @@
     --c-success: #10b981;
     --c-danger: #ef4444;
     --c-warning: #f59e0b;
-    --c-bg: #0f0f14;
-    --c-surface: #1a1a24;
-    --c-surface-2: #22222e;
-    --c-border: #2e2e3e;
-    --c-text: #e2e8f0;
-    --c-text-muted: #94a3b8;
-    --c-shadow-card: 0 4px 20px rgba(0, 0, 0, 0.4);
+    --c-bg: #0B0C10;
+    --c-surface: #121318;
+    --c-surface-2: #1a1b20;
+    --c-border: #1e1f25;
+    --c-text: #faf8fe;
+    --c-text-muted: #abaab0;
+    --c-shadow-card: 0 8px 30px rgba(0, 0, 0, 0.4);
     --c-shadow-hover: 0 8px 25px rgba(99, 102, 241, 0.15);
   }
 
@@ -107,11 +107,25 @@
 
   .card {
     background: var(--c-surface);
-    border: 1px solid var(--c-border);
+    border: 1px solid transparent;
     border-radius: 16px;
     padding: 24px;
     box-shadow: var(--c-shadow-card);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .card-lumina {
+    background: var(--c-surface);
+    border: 1px solid transparent;
+    border-radius: 20px;
+    padding: 24px;
+    transition: all 0.3s ease;
+  }
+  
+  .card-lumina:hover {
+    border: 1px solid color-mix(in srgb, var(--c-primary) 50%, transparent);
+    box-shadow: 0 10px 30px color-mix(in srgb, var(--c-primary) 10%, transparent);
+    transform: translateY(-4px);
   }
 
   .card:hover {
@@ -209,7 +223,7 @@
     width: 260px;
     min-height: 100vh;
     background: var(--c-surface);
-    border-right: 1px solid var(--c-border);
+    border-right: 1px solid transparent;
     padding: 24px 16px;
     display: flex;
     flex-direction: column;
