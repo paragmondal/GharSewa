@@ -103,26 +103,7 @@ const Login = () => {
             <Link to="/register" style={{ color: '#818cf8', textDecoration: 'none', fontWeight: '600' }}>Sign up</Link>
           </p>
 
-          {/* Demo accounts */}
-          <div style={{ marginTop: '24px', padding: '16px', background: '#22222e', borderRadius: '12px', border: '1px solid #2e2e3e' }}>
-            <p style={{ fontSize: '12px', fontWeight: '700', color: '#6366f1', marginBottom: '10px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Demo Accounts</p>
-            {[
-              { role: 'User', email: 'user@demo.com', pass: 'demo123' },
-              { role: 'Provider', email: 'provider@demo.com', pass: 'demo123' },
-              { role: 'Admin', email: 'admin@demo.com', pass: 'demo123' },
-            ].map(({ role, email, pass }) => (
-              <div key={role} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                <span style={{ fontSize: '12px', color: '#94a3b8', fontWeight: '600' }}>{role}:</span>
-                <button
-                  onClick={() => setForm({ email, password: pass })}
-                  style={{ fontSize: '11px', color: '#6366f1', background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'monospace' }}
-                  id={`demo-${role.toLowerCase()}`}
-                >
-                  {email}
-                </button>
-              </div>
-            ))}
-          </div>
+
         </div>
       </div>
     </div>

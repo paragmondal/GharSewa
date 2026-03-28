@@ -5,6 +5,7 @@ import useAuthStore from './store/authStore';
 import useSocketStore from './store/socketStore';
 
 // Pages
+import Home from './pages/public/Home';
 import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
 import UserDashboard from './pages/user/Dashboard';
@@ -101,7 +102,7 @@ const App = () => {
         <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
 
         {/* Root redirect */}
-        <Route path="/" element={<Navigate to="/dashboard" replace />} />
+        <Route path="/" element={<PublicRoute><Home /></PublicRoute>} />
 
         {/* User routes */}
         <Route path="/dashboard" element={
